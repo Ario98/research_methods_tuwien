@@ -55,24 +55,6 @@ def main():
     with col3:
         display_metrics("Model 3", model3_accuracy, model3_precision, model3_recall)
 
-    # Table to display sentences and model outputs
-    st.header("Model Outputs for Sentences")
-    sentence_data = [
-        ("This is a sample sentence.", "Label 1", "Label 2", "Label 3"),
-        ("Another example sentence.", "Label 1", "Label 2", "Label 3"),
-        # Add more rows with actual data
-    ]
-
-    sentences, model1_output, model2_output, model3_output = zip(*sentence_data)
-
-    table_data = {
-        "Sentence": sentences,
-        "Model 1": model1_output,
-        "Model 2": model2_output,
-        "Model 3": model3_output,
-    }
-
-    st.table(table_data)
-
+        
 if __name__ == "__main__":
     main()

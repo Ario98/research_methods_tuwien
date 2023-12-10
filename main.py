@@ -1,60 +1,33 @@
 import streamlit as st
+from models import main as evaluate_models
+from transformers import ElectraForPreTraining, ElectraTokenizerFast
+import torch
+import pandas as pd
 import time
+import psutil
 
 def display_metrics(model_name, accuracy, precision, recall):
-    """
-    Display metrics in a formatted way.
-    """
     st.write(f"**{model_name} Metrics**")
     st.write(f"Accuracy: {accuracy:.4f}")
     st.write(f"Precision: {precision:.4f}")
     st.write(f"Recall: {recall:.4f}")
     st.write("\n---\n")
 
-def test_function(progress_bar):
-    """
-    Function to be called when the test button is clicked.
-    """
-    for i in range(1, 101):
-        time.sleep(0.1)  # Simulating some task that takes time
-        progress_bar.progress(i)
-    st.write("Test button clicked!")
-
 def main():
-    st.title("Model Metrics Dashboard")
+    st.title("Model Evaluation Streamlit App")
 
-    # Progress bar
-    progress_bar = st.progress(0)
+    sentences = ["time is 6 am", "clock shows time as 25pm", "triangle has three corners", "dog barked", "adam said hello [SEP] eve responded how are you"]
 
-    # Test button to call the test_function
-    if st.button("Test Button"):
-        test_function(progress_bar)
-
-    # Placeholder values, replace with actual metrics from your models
-    model1_accuracy = 0.85
-    model1_precision = 0.78
-    model1_recall = 0.92
-
-    model2_accuracy = 0.92
-    model2_precision = 0.88
-    model2_recall = 0.95
-
-    model3_accuracy = 0.78
-    model3_precision = 0.72
-    model3_recall = 0.84
-
-    # Display metrics in three columns
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        display_metrics("Model 1", model1_accuracy, model1_precision, model1_recall)
-
-    with col2:
-        display_metrics("Model 2", model2_accuracy, model2_precision, model2_recall)
-
-    with col3:
-        display_metrics("Model 3", model3_accuracy, model3_precision, model3_recall)
-
+    # Test button to trigger the evaluation
+    if st.button("Evaluate Models"):
+        st.write("Evaluating models...")
         
+        # Call the main method from the models module
+        df = evaluate_models()
+
+        # Display the final DataFrame
+        st.write(df)
+
+
 if __name__ == "__main__":
     main()

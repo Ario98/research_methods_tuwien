@@ -26,6 +26,26 @@ def run_electra(tokenizer, discriminator, sentences):
 
     return discriminator_outputs
 
+def evaluate_model(model_uri, sentences):
+    discriminator = ElectraForPreTraining.from_pretrained(model_uri)
+    tokenizer = ElectraTokenizerFast.from_pretrained(model_uri)
+
+    model_outputs = run_electra(tokenizer, discriminator, sentences)
+
+    data = []
+    for sentence_index, output in enumerate(model_outputs):
+        result = fact_check_output(output)
+        data.append({
+            "Sentence": sentences[sentence_index],
+            "Model": model_uri,
+            "Memory Consumption": output["memory_consumption"],
+            "Execution Time": output["execution_time"],
+            "Prediction": result,
+        })
+
+    df = pd.DataFrame(data)
+    return df
+
 def fact_check_output(output):
     predictions = torch.round((torch.sign(output[0]) + 1) / 2)
     if sum(predictions.tolist()[0]) > 0:
@@ -33,37 +53,21 @@ def fact_check_output(output):
     else:
         return True
 
-model_uris = ["google/electra-small-discriminator", "google/electra-base-discriminator", "google/electra-large-discriminator"]
+def main():
+    model_uris = ["google/electra-small-discriminator", "google/electra-base-discriminator", "google/electra-large-discriminator"]
+    sentences = ["time is 6 am", "clock shows time as 25pm", "triangle has three corners", "dog barked", "adam said hello [SEP] eve responded how are you"]
 
-discriminators = []
-tokenizers = []
+    # Collecting data for each model
+    data_frames = []
 
-for model_uri in model_uris:
-    discriminators.append(ElectraForPreTraining.from_pretrained(model_uri))
-    tokenizers.append(ElectraTokenizerFast.from_pretrained(model_uri))
+    for model_uri in model_uris:
+        df = evaluate_model(model_uri, sentences)
+        data_frames.append(df)
 
-fakes = ["time is 6 am", "clock shows time as 25pm", "triangle has four corners", "cat barked", "adam said hello [SEP] eve responded good night"]
-reals = ["time is 6 am", "clock shows time as 25pm", "triangle has three corners", "dog barked", "adam said hello [SEP] eve responded how are you"]
+    # Combine all DataFrames
+    final_df = pd.concat(data_frames, ignore_index=True)
 
-# Collecting data for each model
-data = []
+    return final_df
 
-for model_index, (discriminator, tokenizer) in enumerate(zip(discriminators, tokenizers)):
-    model_uri = model_uris[model_index]
-    model_outputs = run_electra(tokenizer, discriminator, reals)
-
-    for sentence_index, output in enumerate(model_outputs):
-        result = fact_check_output(output)
-        data.append({
-            "Sentence": reals[sentence_index],
-            "Model": model_uri,
-            "Memory Consumption": output["memory_consumption"],
-            "Execution Time": output["execution_time"],
-            "Prediction": result,
-        })
-
-# Create a DataFrame from the collected data
-df = pd.DataFrame(data)
-
-# Display the DataFrame
-print(df)
+if __name__ == "__main__":
+    main()

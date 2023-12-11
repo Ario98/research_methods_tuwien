@@ -55,7 +55,7 @@ def fact_check_output(output):
 
 def main():
     model_uris = ["google/electra-small-discriminator", "google/electra-base-discriminator", "google/electra-large-discriminator"]
-    sentences = ["time is 6 am", "clock shows time as 25pm", "triangle has three corners", "dog barked", "adam said hello [SEP] eve responded how are you"]
+    sentences = ["time is 6 am", "time is 60 am", "clock shows time as 25pm",  "clock shows time as 12pm", "triangle has three corners", "triangle has four corners", "dog barked", "cat barked", "adam said hello [SEP] eve responded good night", "adam said hello [SEP] eve responded how are you"]
 
     # Collecting data for each model
     data_frames = []

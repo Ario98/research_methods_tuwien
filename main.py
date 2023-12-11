@@ -1,10 +1,7 @@
 import streamlit as st
 from models import main as evaluate_models
-from transformers import ElectraForPreTraining, ElectraTokenizerFast
-import torch
 import pandas as pd
 import time
-import psutil
 import altair as alt
 
 st.set_page_config(layout="wide")

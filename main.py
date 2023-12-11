@@ -52,19 +52,28 @@ def main():
 
     # Test button to trigger the evaluation
     if st.button("Evaluate Models"):
-        st.write("Starting the evaluation.")
+
+        progress_text = "Starting evaluation."
+        my_bar = st.progress(0, text=progress_text)
+
+        my_bar.progress(20, text='Running models...')
         
         # Call the main method from the models module
         df = evaluate_models()
+
+        my_bar.progress(50, text='Finished running the models.')
 
         # Display the final DataFrame
         st.write(df)
 
         # Visualise
+        my_bar.progress(70, text='Running the visualisations...')
         visualize_execution_time(df)
         visualize_execution_time_per_sentence(df)
+        my_bar.progress(90, text='Finishing visualisations...')
         visualize_mean_memory_consumption(df)
         visualize_memory_consumption_per_sentence(df)
+        my_bar.progress(100, text='Analysis complete.')
     
 
 def visualize_execution_time(dataframe):

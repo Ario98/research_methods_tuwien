@@ -15,8 +15,8 @@ def run_electra(tokenizer, discriminator, sentences):
         output = discriminator(inputs)
 
         end_time = time.time()  # Record end time
-        execution_time = end_time - start_time  # Calculate execution time
-        memory_consumption = process.memory_info().rss  # Get memory consumption
+        execution_time = end_time - start_time  # Calculate execution time in seconds
+        memory_consumption = process.memory_info().rss  # Get memory consumption in bytes
 
         # Append time and memory information to the output
         output["execution_time"] = execution_time
